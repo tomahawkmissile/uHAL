@@ -1,0 +1,7 @@
+# Target files for atmega328p
+
+
+
+# First, go to build/output
+# avr-objcopy -O ihex -j .text -j .data eos.elf eos.hex                                       <- use this to turn into hex file
+#avrdude -v -patmega328p -carduino -P/dev/ttyACM0 -b115200 -D -Uflash:w:output/eos.hex:i              <- use this to upload
