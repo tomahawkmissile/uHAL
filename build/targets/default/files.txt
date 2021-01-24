@@ -1,1 +1,4 @@
 # Default files for system
+
+hal/serial/serial.c
+main.c

@@ -8,9 +8,9 @@
 
 #include "../../system.h"
 
-#if FRONTEND == 1 //If atmega2560
+#if BACKEND == 1 //If atmega2560
     #include "../../backends/atmega2560/serial/serial.h"
-#elif FRONTEND == 2 //If atmega328p
+#elif BACKEND == 2 //If atmega328p
     #include "../../backends/atmega328p/serial/serial.h"
 #endif
 

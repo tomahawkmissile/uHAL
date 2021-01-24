@@ -1,6 +1,8 @@
 # Target files for atmega328p
 
-
+backends/atmega328p/serial/serial.c
+backends/atmega328p/time/delay.c
+backends/atmega328p/time/systime.c
 
 # First, go to build/output
 # avr-objcopy -O ihex -j .text -j .data eos.elf eos.hex                                       <- use this to turn into hex file

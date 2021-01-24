@@ -20,7 +20,7 @@ void atmega328p_uart_setbaud(uint32_t newBaud) {
 */
 void hal_uart_putchar(char c) {
     if(c == '\n') {
-        atmega328p_uart_putchar('\r');
+        hal_uart_putchar('\r');
     }
     loop_until_bit_is_set(UCSR0A, UDRE0);
     UDR0 = c;

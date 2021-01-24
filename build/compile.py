@@ -6,7 +6,7 @@ import shutil
 import subprocess
 
 COMPILER_NAME = 'avr-gcc'
-COMPILER_FLAGS = '-mmcu=atmega328p -Os -DF_CPU=16000000UL -DBAUD=9600 -Wall -Wno-main -Wundef -pedantic -Wno-unused-variable -Werror -Wfatal-errors -Wl,--relax,--gc-sections -g -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -fno-split-wide-types -fno-tree-scev-cprop'
+COMPILER_FLAGS = '-mmcu=atmega328p -DBACKEND=2 -Os -DF_CPU=16000000UL -DBAUD=9600 -Wall -Wno-main -Wundef -pedantic -Wno-unused-variable -Werror -Wfatal-errors -Wl,--relax,--gc-sections -g -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -fno-split-wide-types -fno-tree-scev-cprop'
 LINKER_NAME = 'avr-gcc'
 LINKER_FLAGS = '-mmcu=atmega328p'
 
