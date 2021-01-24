@@ -1,0 +1,4 @@
+# Files to include in compilation os EOS
+
+#include ../../../../../build/targets/default/files.txt
+#include ../../../../../build/targets/atmega328p/files.txt
