@@ -1,3 +1,5 @@
+#include "test.h"
+
 #include "hal/serial/serial.h"
 #include "hal/time/delay.h"
 #include "hal/time/systime.h"
@@ -15,16 +17,22 @@ const char* long_to_string(long input) {
     return (const char*)buf;
 }
 
-void main(void) {
+void init_hal_test(void) {
     millis_init();
     delay(50);
     serial_init();
     delay(50);
 
-    while(1) {
-        unsigned long t1 = millis();
-        delay(750);
-        unsigned long t2 = millis();
-        serial_println(long_to_string(t2-t1));
-    }
+}
+
+void run_hal_test(void) {
+    init_hal_test(); //Don't include in header! Will be called upon run.
+
+    
+}
+
+void main(void) {
+    run_hal_test();
+
+    while(1);
 }
