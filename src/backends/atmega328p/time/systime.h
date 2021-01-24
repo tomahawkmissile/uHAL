@@ -23,6 +23,13 @@
 	#define ISR_VECT		TIM0_COMPA_vect
 #endif
 
+#define CLOCKS_PER_MS() ( F_CPU / 1000000L )
+#define CLOCKS_TO_MS(a) ( ((a) * 1000L) / (F_CPU / 1000L) )
+#define MS_PER_TIMER0_OVERFLOW (CLOCKS_TO_MS(64 * 256))
+#define MS_INC (MS_PER_TIMER0_OVERFLOW / 1000)
+#define FRAC_INC ((MS_PER_TIMER0_OVERFLOW % 1000) >> 3)
+#define FRAC_MAX (1000 >> 3)
+
 void hal_millis_init(void);
 unsigned long hal_millis_get(void);
 void hal_millis_resume(void);
