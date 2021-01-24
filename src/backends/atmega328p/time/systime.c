@@ -1,6 +1,6 @@
 #include "systime.h"
 
-volatile unsigned long milliseconds, fraction, overflow;
+volatile uint32_t milliseconds, fraction, overflow;
 
 void hal_millis_init(void) {
     sei();
@@ -10,8 +10,8 @@ void hal_millis_init(void) {
     OCR0A = (((F_CPU)/PRESCALER)/1000);
 }
 
-unsigned long hal_millis_get(void) {
-    unsigned long ms;
+uint32_t hal_millis_get(void) {
+    uint32_t ms;
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         ms = milliseconds;
     }
@@ -30,19 +30,19 @@ void hal_millis_reset(void) {
         milliseconds = 0;
     }
 }
-void hal_millis_add(unsigned long ms) {
+void hal_millis_add(uint32_t ms) {
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
 		milliseconds += ms;
 	}
 }
-void hal_millis_subtract(unsigned long ms) {
+void hal_millis_subtract(uint32_t ms) {
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
 		milliseconds -= ms;
 	}
 }
 ISR(ISR_VECT) {
-    unsigned long m = milliseconds;
-    unsigned long f = fraction;
+    uint32_t m = milliseconds;
+    uint32_t f = fraction;
 
     m += MS_INC;
     f += FRAC_INC;

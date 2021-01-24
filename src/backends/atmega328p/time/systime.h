@@ -7,6 +7,8 @@
 #include <avr/power.h>
 #include <util/atomic.h>
 
+#include <stdint.h>
+
 #if F_CPU > 16320000 // 16.32MHz - 65.28MHz
 	#define CLOCKSEL (_BV(CS20))
 	#define PRESCALER 256
@@ -31,12 +33,12 @@
 #define FRAC_MAX (1000 >> 3)
 
 void hal_millis_init(void);
-unsigned long hal_millis_get(void);
+uint32_t hal_millis_get(void);
 void hal_millis_resume(void);
 void hal_millis_pause(void);
 void hal_millis_reset(void);
-void hal_millis_add(unsigned long ms);
-void hal_millis_subtract(unsigned long ms);
+void hal_millis_add(uint32_t ms);
+void hal_millis_subtract(uint32_t ms);
 
 
 #endif
