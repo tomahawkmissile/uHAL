@@ -77,38 +77,45 @@ void parseCmdLineArgs(const char** input) {
   for(int i=0;i<outputLength;i++) {
     serial_println(output[i]);
   }
-  
-  serial_linebreak();
 
   if(argsEqual(*input,"help")) {
     serial_println("<--- Available commands --->");
     serial_println("help                                            - show this page");
-  } else if(argsEqual(*input,"")) {
-    serial_println("");
+  } else if(argsEqual(*input,"") || strlen(*input)==0) { //Empty input string
+    serial_linebreak();
   } else {
     serial_println("Unknown command. Type \'help\' for a help page.");
   }
-  serial_println(CONSOLE_HEADER);
 }
 
 void cli_init(void) { //Serial already initialized
 
     serial_linebreak(); //Spacer before prompt
-    serial_println(CONSOLE_HEADER); //Initial console characters on boot
+    serial_print(CONSOLE_HEADER); //Initial console characters on boot
 }
 
 char* current_input="";
+unsigned int typed_length=0;
 void cli_run(void) {
     //Console input
-  if(serial_available()) {
-    char c = serial_read();
-    if(c != '\n' && c != '\r') {
-      current_input += c;
-      serial_printChar(c); //Print back to console to see what you're typing
+    if(serial_available()) {
+        char c = serial_read();
+        if((c == 0x08 || c == 0x7F)) { //8 or 127 backspace character
+          if(typed_length>0) {
+            serial_printChar(8); serial_printChar(' '); serial_printChar(8);
+            --typed_length;
+          } else {
+            serial_printChar(7); //bell
+          }
+        } else if(c != '\n' && c != '\r') {
+          ++typed_length;
+          current_input += c;
+          serial_printChar(c); //Print back to console to see what you're typing
+        } else if(c=='\n' || c=='\r') { //If incoming data is newline
+          parseCmdLineArgs((const char**)&current_input); //Send input to be parsed
+          current_input=""; //Reset input
+          typed_length=0;
+          serial_print(CONSOLE_HEADER); //Print new header
+        }
     }
-    if(c=='\n' || c=='\r') { //If incoming data is newline
-      parseCmdLineArgs((const char**)&current_input); //Send input to be parsed
-      current_input=""; //Reset input
-    }
-  }
 }

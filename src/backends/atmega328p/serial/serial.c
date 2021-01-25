@@ -30,7 +30,7 @@ char hal_uart_getchar() {
     return UDR0;
 }
 bool hal_uart_rxbuffer_ready(void) {
-    if(bit_is_set(UCSR0B,RXC0)) {
+    if(bit_is_set(UCSR0A,RXC0)) {
         return true;
     } else {
         return false;
