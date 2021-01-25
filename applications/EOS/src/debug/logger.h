@@ -2,7 +2,7 @@
 #define LOGGER_H
 
 #include "hal/serial/serial.h"
-#include "hal/time/time.h"
+#include "hal/time/systime.h"
 #include "debug.h"
 #include "../utils/string/strings.h"
 

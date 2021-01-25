@@ -16,12 +16,12 @@ void logMessage(LOG_SEVERITY severity, const char* message) {
   const char* printed = concat(head , message);
   if(severity == DEBUG) {
     if(getDebug()) {
-      HAL_serial_putstring(printed);
+      serial_putstring(printed);
     }
     //TODO store to debug log
   } else {
     if(severity == CONSOLE || severity == BOOT) { //If a boot log or console output, print to serial terminal
-      HAL_serial_putstring(printed);
+      serial_putstring(printed);
     } else { //Else, store in log buffer
       //TODO implement log buffer for logs
     }

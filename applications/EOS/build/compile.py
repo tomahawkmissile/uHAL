@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 import shutil
 import subprocess
+import glob
 
 # Edit compiler flags for your system
 COMPILER_NAME = 'avr-gcc'
@@ -11,19 +12,23 @@ COMPILER_FLAGS = '-mmcu=atmega328p -Os -DBACKEND=2 -DF_CPU=16000000UL -DBAUD=960
 LINKER_NAME = 'avr-gcc'
 LINKER_FLAGS = '-mmcu=atmega328p'
 
-INCLUDE_PATH = '-I../../../src/hal'
+INCLUDE_PATH = '-I'+os.path.abspath('../../../src') # Relative to this src/ directory
 
-def get_compile_list():
+COMPILE_TARGET = 'atmega328p'
+
+THIS_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+HAL_OUTPUT_DIRECTORY = '../../../build/output'
+
+def get_compile_list(list_file):
     list_compile_c_files = []
 
-    with open('targets/default/files.txt') as default_files:
+    with open(list_file) as default_files:
         for line in default_files:
             if line.startswith('#include'): # If we want to include another list
-                include_file = line.split(' ')[1]
-                with open(include_file) as included_file:
-                    for included_line in included_file:
-                        if included_line not in list_compile_c_files: # Duplication check
-                            list_compile_c_files.append(included_line)
+                include_file = line.split(' ')[1].strip('\n')
+                iList = get_compile_list(include_file)
+                for iElement in iList:
+                    list_compile_c_files.append(iElement)
             elif not line.startswith('#') and not line.isspace():
                 if line not in list_compile_c_files: # Catch duplicates
                     list_compile_c_files.append(line.rstrip('\n'))
@@ -45,7 +50,17 @@ def main():
     parser=argparse.ArgumentParser()
     args=parser.parse_args()
 
-    compile_list = get_compile_list()
+    # First, compile HAL and add .o files to linker list
+    os.system('python3 ../../../build/compile.py --target='+COMPILE_TARGET)
+    executable_list_string = ''
+    os.chdir(HAL_OUTPUT_DIRECTORY)
+    print("Switching directories to: "+HAL_OUTPUT_DIRECTORY)
+    for f in glob.glob("**/*.o", recursive=True):
+        executable_list_string += HAL_OUTPUT_DIRECTORY+'/'+f+' '
+    print("Switching directories to: "+THIS_DIRECTORY)
+    os.chdir(THIS_DIRECTORY)
+
+    compile_list = get_compile_list('targets/default/files.txt')
     if compile_list is None:
         print("No files to be compiled! Check your compilation list!")
         exit(-1)
@@ -61,7 +76,6 @@ def main():
     # Change directory to src/
     os.chdir('../src/')
 
-    executable_list_string = ''
     for file_name in compile_list:
         executable_location = '../build/output/'+file_name+'.o'
         mkdir_for_output_file(executable_location)
@@ -78,7 +92,7 @@ def main():
     # Change back to build/
     os.chdir('../build/')
 
-    post_script = 'targets/'+args.target+'/postprocessing.sh'
+    post_script = 'targets/default/postprocessing.sh'
     if os.path.isfile(post_script): # If a postprocessing script is given
         print('Executing postprocessing script...')
         subprocess.call(['bash', '../'+post_script], cwd='output/')

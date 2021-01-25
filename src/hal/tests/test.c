@@ -1,6 +1,6 @@
 #include "test.h"
 
-const char* long_to_string(uint32_t input) {
+const char* test_long_to_string(uint32_t input) {
     if(input==0) return "0";
     //int nDigits = floor(log10(abs(input)))+1;
     const int n = snprintf(NULL, 0, "%lu", (unsigned long)input);
@@ -31,8 +31,8 @@ bool run_hal_test(void) {
         uint32_t t2 = millis();
         uint32_t diff = (t1>t2 ? t1-t2 : t2-t1);
         uint32_t error = (delay_test > diff ? delay_test-diff : diff-delay_test);
-        const char* delay_test_str = long_to_string(delay_test);
-        const char* error_str = long_to_string(error);
+        const char* delay_test_str = test_long_to_string(delay_test);
+        const char* error_str = test_long_to_string(error);
         serial_print("Delay with t="); serial_print(delay_test_str); serial_print("ms yielded time mismatch of "); serial_println(error_str);
         free((void*)delay_test_str);
         //free((void*)error_str);
@@ -45,7 +45,7 @@ bool run_hal_test(void) {
 
     return passed;
 }
-
+/*
 void main(void) {
     if(run_hal_test()) {
         //Test passed, all good!
@@ -54,9 +54,10 @@ void main(void) {
     }
 
     while(1) {
-        const char* ms_str = long_to_string(millis());
+        const char* ms_str = test_long_to_string(millis());
         serial_println(ms_str);
         free((void*)ms_str);
         delay(500);
     }
 }
+*/

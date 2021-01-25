@@ -1,10 +1,10 @@
 #ifndef EOS_H
 #define EOS_H
 
-#include "time/delay.h"
-#include "time/systime.h"
+#include "hal/time/delay.h"
+#include "hal/time/systime.h"
 
-#include "serial/serial.h"
+#include "hal/serial/serial.h"
 
 #include "cli/cli.h"
 

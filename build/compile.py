@@ -10,6 +10,9 @@ COMPILER_FLAGS = '-mmcu=atmega328p -DBACKEND=2 -Os -DF_CPU=16000000UL -DBAUD=960
 LINKER_NAME = 'avr-gcc'
 LINKER_FLAGS = '-mmcu=atmega328p'
 
+THIS_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+HAL_OUTPUT_DIRECTORY = 'output'
+
 def get_compile_list(target):
     list_compile_c_files = []
 
@@ -51,6 +54,8 @@ def mkdir_for_output_file(file_name):
     Path(directory).mkdir(parents=True, exist_ok=True)
 
 def main():
+    os.chdir(THIS_DIRECTORY)
+
     parser=argparse.ArgumentParser()
     parser.add_argument('--target', type=str, help='select compilation target', required=True)
     args=parser.parse_args()
