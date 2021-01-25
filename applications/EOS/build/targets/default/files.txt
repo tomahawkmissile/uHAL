@@ -2,3 +2,15 @@
 
 #include ../../../../../build/targets/default/files.txt
 #include ../../../../../build/targets/atmega328p/files.txt
+
+main.c
+eos.c
+
+utils/string/strings.c
+
+tasks/queue.c
+
+debug/logger.c
+debug/debug.c
+
+cli/cli.c

@@ -7,9 +7,11 @@ import subprocess
 
 # Edit compiler flags for your system
 COMPILER_NAME = 'avr-gcc'
-COMPILER_FLAGS = '-mmcu=atmega328p -DBACKEND=2 -Os -DF_CPU=16000000UL -DBAUD=9600 -Wall -Wno-main -Wundef -pedantic -Wno-unused-variable -Werror -Wfatal-errors -Wl,--relax,--gc-sections -g -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -fno-split-wide-types -fno-tree-scev-cprop'
+COMPILER_FLAGS = '-mmcu=atmega328p -Os -DBACKEND=2 -DF_CPU=16000000UL -DBAUD=9600 -Wall -Wno-main -Wundef -pedantic -Wno-unused-variable -Werror -Wfatal-errors -Wl,--relax,--gc-sections -g -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -fno-split-wide-types -fno-tree-scev-cprop'
 LINKER_NAME = 'avr-gcc'
 LINKER_FLAGS = '-mmcu=atmega328p'
+
+INCLUDE_PATH = '-I../../../src/hal'
 
 def get_compile_list():
     list_compile_c_files = []
@@ -64,7 +66,7 @@ def main():
         executable_location = '../build/output/'+file_name+'.o'
         mkdir_for_output_file(executable_location)
         executable_list_string += executable_location+' '
-        cmd = (COMPILER_NAME+' '+COMPILER_FLAGS+' -c -o '+executable_location+' '+file_name)
+        cmd = (COMPILER_NAME+' '+INCLUDE_PATH+' '+COMPILER_FLAGS+' -c -o '+executable_location+' '+file_name)
         print('Compiling with command: '+cmd)
         os.system(cmd)
 

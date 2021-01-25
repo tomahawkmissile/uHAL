@@ -55,7 +55,7 @@ void main(void) {
 
     while(1) {
         const char* ms_str = long_to_string(millis());
-        if(millis() < 5000) serial_println(ms_str);
+        serial_println(ms_str);
         free((void*)ms_str);
         delay(500);
     }
