@@ -19,6 +19,8 @@ const char* combine_list(const char** list, unsigned int len);
 char* nonconst_substring(const char* input, unsigned int start, unsigned int end);
 const char* substring(const char* input, unsigned int start, unsigned int end);
 
+void cut(char** input, unsigned int start, unsigned int stop);
+
 const char* long_to_string(long input);
 
 #endif

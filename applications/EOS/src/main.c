@@ -14,11 +14,13 @@ int main(void) {
     char* bTest = "World!";
     char cTest = 'y';
 
+    /*
     serial_println(concat(aTest,bTest));
     append_char(&aTest,cTest);
     serial_println(aTest);
     serial_println(substring(aTest,1,4));
     serial_linebreak();
+    */
 
     while(1) loop();
 

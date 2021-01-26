@@ -17,8 +17,9 @@ const char* concat_strlen(const char* a, unsigned int aLen, const char* b, unsig
 const char* concat(const char* a, const char* b) {
     return concat_strlen(a,strlen(a),b,strlen(b));
 }
-
+#include "hal/serial/serial.h"
 void append_char_strlen(char** a, unsigned int aLen, char b) {
+    serial_println(long_to_string(aLen));
     *a = (char*)realloc(*a, sizeof(char)*(aLen+2));
     if(aLen==0) {
         (*a)[0]=b;
@@ -59,6 +60,14 @@ char* nonconst_substring(const char* input, unsigned int start, unsigned int end
 }
 const char* substring(const char* input, unsigned int start, unsigned int end) {
     return (const char*)nonconst_substring(input,start,end);
+}
+
+void cut(char** input, unsigned int start, unsigned int stop) {
+    char* output = (char*)malloc(sizeof(char)*(stop-start+1));
+    for(unsigned int i=start;i<stop;i++) output[i-start]=(*input)[i];
+    output[stop-start]='\0';
+    free(*input);
+    *input=output;
 }
 
 const char* long_to_string(long input) {

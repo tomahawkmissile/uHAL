@@ -13,7 +13,7 @@ void printConsole(const char* message) {
   serial_println(concat(CONSOLE_HEADER,message));
 }
 
-void trimCmdLineArgs(const char** input) {
+void trimCmdLineArgs(char** input) {
   unsigned int firstValidChar=-1, lastValidChar=-1;
   for(unsigned int i=0;i<strlen(*input);i++) { //Get start index
     if((*input)[i]!=' ') { //If not a space
@@ -31,9 +31,7 @@ void trimCmdLineArgs(const char** input) {
       }
     }
   }
-  const char* output = substring(*input,firstValidChar,lastValidChar+1);
-  free((void*)*input);
-  *input = output;
+  cut(input,firstValidChar,lastValidChar+1);
 }
 void smartSpaceSplit(const char* line, char** output, unsigned int* outputLength) {
   bool inQuotes=false;
@@ -66,34 +64,33 @@ void smartSpaceSplit(const char* line, char** output, unsigned int* outputLength
   }
   return;
 }
-void parseCmdLineArgs(const char** input) {
-  trimCmdLineArgs(input);
+void parseCmdLineArgs(const char* input) {
+  char* output = strdup(input);
+  trimCmdLineArgs(&output);
   
-  unsigned int outputLength=0;
-  char** output = NULL;
-  smartSpaceSplit(*input,output,&outputLength);
-  for(int i=0;i<outputLength;i++) {
-    serial_println(output[i]);
+  /*
+  unsigned int argsLength=0;
+  char** args = NULL;
+  smartSpaceSplit(output,args,&argsLength);
+  for(int i=0;i<argsLength;i++) {
+    serial_println(args[i]);
   }
-
-  if(argsEqual(*input,"help")) {
+  */
+  if(argsEqual(output,"help")) {
     serial_println("<--- Available commands --->");
     serial_println("help                                            - show this page");
-  } else if(argsEqual(*input,"") || strlen(*input)==0) { //Empty input string
-    serial_linebreak();
   } else {
     serial_println("Unknown command. Type \'help\' for a help page.");
   }
 }
 
-void cli_init(void) { //Serial already initialized
+char current_input[MAX_INPUT_LENGTH+1]; //Input buffer + null terminator
+unsigned int typed_length=0; //Length of current input
 
+void cli_init(void) { //Serial already initialized
     serial_linebreak(); //Spacer before prompt
     serial_print(CONSOLE_HEADER); //Initial console characters on boot
 }
-
-char* current_input;
-unsigned int typed_length=0; //Length of current input
 void cli_run(void) {
     //Console input
     if(serial_available()) {
@@ -104,28 +101,30 @@ void cli_run(void) {
             if(typed_length>0) {
               serial_printChar(8); serial_printChar(' '); serial_printChar(8);
               --typed_length;
-              current_input = nonconst_substring((const char*)current_input,0,typed_length);
+              for(unsigned int i=typed_length;i<MAX_INPUT_LENGTH;i++) current_input[i]='\0'; //Fill with null terminators
             } else {
               serial_printChar(7); //bell
             }
             break;
           case '\r':
           case '\n':
-            //parseCmdLineArgs((const char**)&current_input); //Send input to be parsed
-            if(typed_length==0 || current_input==NULL) {
+            if(typed_length==0) {
               serial_linebreak();
             } else {
-              serial_println(current_input);
-              free((char*)current_input);
+              serial_linebreak();
+              parseCmdLineArgs((const char*)current_input); //Send input to be parsed
+              for(unsigned int i=0;i<MAX_INPUT_LENGTH;i++) current_input[i]='\0';
             }
             typed_length=0;
             serial_print(CONSOLE_HEADER); //Print new header
-              break;
+            break;
           case 0x03: //Control-C
 
             break;
           default:
-            append_char_strlen(&current_input, typed_length, c);
+            if(typed_length>=MAX_INPUT_LENGTH) break;
+            current_input[typed_length]=c;
+            current_input[typed_length+1]='\0';
             ++typed_length;
             serial_printChar(c); //Print back to console to see what you're typing
             break;
