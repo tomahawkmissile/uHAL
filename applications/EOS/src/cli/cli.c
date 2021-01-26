@@ -93,7 +93,7 @@ void cli_init(void) { //Serial already initialized
 }
 
 char* current_input;
-unsigned int typed_length=0;
+unsigned int typed_length=0; //Length of current input
 void cli_run(void) {
     //Console input
     if(serial_available()) {
@@ -104,6 +104,7 @@ void cli_run(void) {
             if(typed_length>0) {
               serial_printChar(8); serial_printChar(' '); serial_printChar(8);
               --typed_length;
+              current_input = nonconst_substring((const char*)current_input,0,typed_length);
             } else {
               serial_printChar(7); //bell
             }
@@ -111,7 +112,7 @@ void cli_run(void) {
           case '\r':
           case '\n':
             //parseCmdLineArgs((const char**)&current_input); //Send input to be parsed
-            if(current_input==NULL) {
+            if(typed_length==0 || current_input==NULL) {
               serial_linebreak();
             } else {
               serial_println(current_input);
@@ -124,10 +125,8 @@ void cli_run(void) {
 
             break;
           default:
+            append_char_strlen(&current_input, typed_length, c);
             ++typed_length;
-            char* newInput = nonconst_append_char(current_input, c);
-            if(current_input != NULL) free((char*)current_input);
-            current_input = newInput;
             serial_printChar(c); //Print back to console to see what you're typing
             break;
         }
