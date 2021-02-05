@@ -23,4 +23,6 @@ void cut(char** input, unsigned int start, unsigned int stop);
 
 const char* long_to_string(long input);
 
+void smartSpaceSplit(const char* line, char delim, char** output, unsigned int* outputLength);
+
 #endif

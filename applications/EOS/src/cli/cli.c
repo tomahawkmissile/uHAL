@@ -33,49 +33,11 @@ void trimCmdLineArgs(char** input) {
   }
   cut(input,firstValidChar,lastValidChar+1);
 }
-void smartSpaceSplit(const char* line, char** output, unsigned int* outputLength) {
-  bool inQuotes=false;
-  int last=0;
-  for(unsigned int i=0;i<strlen(line);i++) {
-    char c = line[i];
-    switch(c) {
-      case '"':
-        inQuotes=!inQuotes;
-        break;
-      case ' ':
-        if(!inQuotes && i>0) {
-          (*outputLength)++;
-          if((*outputLength)>0) *output=(char*)realloc(*output,sizeof(char)*((*outputLength)+1));
-          else *output=(char*)malloc(sizeof(char)*((*outputLength)+1));
-          output[(*outputLength)-1]=nonconst_substring(line,last,i);
-          last=i+1;
-          break;
-        }
-      default: 
-        if(i==strlen(line)-2) {
-          (*outputLength)++;
-          if((*outputLength)>0) *output=(char*)realloc(*output,sizeof(char)*((*outputLength)+1));
-          else *output=(char*)malloc(sizeof(char)*((*outputLength)+1));
-          output[(*outputLength)-1]=nonconst_substring(line,last,i+2);
-          return;
-        }
-      break;
-    }
-  }
-  return;
-}
+
 void parseCmdLineArgs(const char* input) {
   char* output = strdup(input);
   trimCmdLineArgs(&output);
   
-  /*
-  unsigned int argsLength=0;
-  char** args = NULL;
-  smartSpaceSplit(output,args,&argsLength);
-  for(int i=0;i<argsLength;i++) {
-    serial_println(args[i]);
-  }
-  */
   if(argsEqual(output,"help")) {
     serial_println("<--- Available commands --->");
     serial_println("help                                            - show this page");

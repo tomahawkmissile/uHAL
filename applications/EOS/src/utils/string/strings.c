@@ -79,3 +79,37 @@ const char* long_to_string(long input) {
     int c = snprintf(buf, n+1, "%lu", input);
     return (const char*)buf;
 }
+
+void smartCharSplit(const char* line, char delim, char*** output, unsigned int* outputLength) {
+  bool inQuotes=false;
+  int last=0;
+  for(unsigned int i=0;i<strlen(line);i++) {
+    char c = line[i];
+    switch(c) {
+      case '"':
+        inQuotes=!inQuotes;
+        break;
+      default: 
+        if(c==delim) {
+            if(!inQuotes && i>0) {
+                (*outputLength)++;
+                if((*outputLength)>0) *output=(char**)realloc(*output,sizeof(char*)*((*outputLength)+1));
+                else *output=(char**)malloc(sizeof(char*)*((*outputLength)+1));
+                (*output)[(*outputLength)-1]=nonconst_substring(line,last,i);
+                last=i+1;
+                break;
+            }
+        } else {
+            if(i==strlen(line)-2) {
+                (*outputLength)++;
+                if((*outputLength)>0) *output=(char*)realloc(*output,sizeof(char*)*((*outputLength)+1));
+                else *output=(char*)malloc(sizeof(char*)*((*outputLength)+1));
+                (*output)[(*outputLength)-1]=nonconst_substring(line,last,i+2);
+                return;
+            }
+        }
+      break;
+    }
+  }
+  return;
+}

@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 #include "../utils/string/strings.h"
+#include "../utils/string/args.h"
 #include "../debug/debug.h"
 #include "../debug/logger.h"
 #include "hal/serial/serial.h"
@@ -18,7 +19,6 @@
 bool argsEqual(const char* input,const char* test);
 void printConsole(const char* message);
 void trimCmdLineArgs(char** input);
-void smartSpaceSplit(const char* line, char** output, unsigned int* outputLength);
 void parseCmdLineArgs(const char* input);
 void cli_init(void);
 void cli_run(void);

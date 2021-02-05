@@ -4,6 +4,7 @@ main.c
 eos.c
 
 utils/string/strings.c
+utils/string/args.c
 
 tasks/queue.c
 
